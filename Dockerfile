@@ -4,7 +4,7 @@ ENV NODE_VERSION="16.3-alpine"
 
 FROM registry.access.redhat.com/ubi8/nodejs-14:latest as build
 
-USER root
+
 COPY . /workspace/
 
 ENV NPM_REGISTRY=" https://registry.npmjs.org"
@@ -14,6 +14,7 @@ RUN echo "registry = https://registry.npmjs.org" > /workspace/.npmrc            
     npm install                                                                          && \
     npm run build
 
+USER root
 FROM registry.access.redhat.com/ubi8/nginx-118:latest AS runtime
 
 
