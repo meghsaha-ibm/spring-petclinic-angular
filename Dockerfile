@@ -6,9 +6,6 @@ COPY . /workspace/
 
 ENV NPM_REGISTRY=" https://registry.npmjs.org"
 
-RUN chgrp -R 0 /workspace/ && \
-    chmod -R g=u /workspace/
-
 RUN echo "registry = \"$NPM_REGISTRY\"" > /workspace/.npmrc                              && \
     cd /workspace/                                                                       && \
     npm install                                                                          && \
