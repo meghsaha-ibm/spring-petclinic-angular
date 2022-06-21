@@ -2,9 +2,9 @@ ENV DOCKER_HUB="docker.io"
 ENV NGINX_VERSION="1.17.6"
 ENV NODE_VERSION="16.3-alpine"
 
-FROM docker.io/library/node:16.3-alpine as build
+FROM registry.access.redhat.com/ubi8/nodejs-14:latest as build
 
-
+USER root
 COPY . /workspace/
 
 ENV NPM_REGISTRY=" https://registry.npmjs.org"
@@ -14,7 +14,7 @@ RUN echo "registry = https://registry.npmjs.org" > /workspace/.npmrc            
     npm install                                                                          && \
     npm run build
 
-FROM docker.io/library/nginx:1.17.6 AS runtime
+FROM registry.access.redhat.com/ubi8/nginx-118:latest AS runtime
 
 
 COPY  --from=build /workspace/dist/ /usr/share/nginx/html/
