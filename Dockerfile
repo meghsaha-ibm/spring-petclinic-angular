@@ -2,19 +2,19 @@ ENV DOCKER_HUB="docker.io"
 ENV NGINX_VERSION="1.17.6"
 ENV NODE_VERSION="16.3-alpine"
 
-FROM $DOCKER_HUB/library/node:$NODE_VERSION as build
+FROM ${DOCKER_HUB}/library/node:${NODE_VERSION} as build
 
 
 COPY . /workspace/
 
 ENV NPM_REGISTRY=" https://registry.npmjs.org"
 
-RUN echo "registry = \"$NPM_REGISTRY\"" > /workspace/.npmrc                              && \
+RUN echo "registry = \"${NPM_REGISTRY}\"" > /workspace/.npmrc                              && \
     cd /workspace/                                                                       && \
     npm install                                                                          && \
     npm run build
 
-FROM $DOCKER_HUB/library/nginx:$NGINX_VERSION AS runtime
+FROM $DOCKER_HUB/library/nginx:${NGINX_VERSION} AS runtime
 
 
 COPY  --from=build /workspace/dist/ /usr/share/nginx/html/
