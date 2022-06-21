@@ -1,5 +1,6 @@
 FROM registry.access.redhat.com/ubi8/nodejs-14:latest as build
 
+USER 1000
 
 COPY . /workspace/
 
@@ -25,7 +26,7 @@ RUN chmod a+rwx /var/cache/nginx /var/run /var/log/nginx                        
 
 EXPOSE 8080
 
-USER 1001
+USER nginx
 
 HEALTHCHECK     CMD     [ "service", "nginx", "status" ]
 
