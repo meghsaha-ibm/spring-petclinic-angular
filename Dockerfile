@@ -1,20 +1,19 @@
-ARG DOCKER_HUB="docker.io"
-ARG NGINX_VERSION="1.17.6"
-ARG NODE_VERSION="16.3-alpine"
-
-FROM $DOCKER_HUB/library/node:$NODE_VERSION as build
+FROM registry.access.redhat.com/ubi8/nodejs-14:latest as build
 
 
 COPY . /workspace/
 
-ARG NPM_REGISTRY=" https://registry.npmjs.org"
+ENV NPM_REGISTRY=" https://registry.npmjs.org"
+
+RUN chgrp -R 0 /workspace/ && \
+    chmod -R g=u /workspace/
 
 RUN echo "registry = \"$NPM_REGISTRY\"" > /workspace/.npmrc                              && \
     cd /workspace/                                                                       && \
     npm install                                                                          && \
     npm run build
 
-FROM $DOCKER_HUB/library/nginx:$NGINX_VERSION AS runtime
+FROM registry.access.redhat.com/ubi8/nginx-118:latest AS runtime
 
 
 COPY  --from=build /workspace/dist/ /usr/share/nginx/html/
@@ -26,7 +25,7 @@ RUN chmod a+rwx /var/cache/nginx /var/run /var/log/nginx                        
 
 EXPOSE 8080
 
-USER nginx
+USER 1001
 
 HEALTHCHECK     CMD     [ "service", "nginx", "status" ]
 
