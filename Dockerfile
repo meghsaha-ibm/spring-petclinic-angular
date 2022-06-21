@@ -14,7 +14,6 @@ RUN echo "registry = https://registry.npmjs.org" > /workspace/.npmrc            
     npm install                                                                          && \
     npm run build
 
-USER root
 FROM registry.access.redhat.com/ubi8/nginx-118:latest AS runtime
 
 
