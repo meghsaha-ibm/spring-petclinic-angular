@@ -1,6 +1,9 @@
-FROM registry.access.redhat.com/ubi8/nodejs-14:latest as build
+ENV DOCKER_HUB="docker.io"
+ENV NGINX_VERSION="1.17.6"
+ENV NODE_VERSION="16.3-alpine"
 
-USER 1000
+FROM $DOCKER_HUB/library/node:$NODE_VERSION as build
+
 
 COPY . /workspace/
 
@@ -11,7 +14,7 @@ RUN echo "registry = \"$NPM_REGISTRY\"" > /workspace/.npmrc                     
     npm install                                                                          && \
     npm run build
 
-FROM registry.access.redhat.com/ubi8/nginx-118:latest AS runtime
+FROM $DOCKER_HUB/library/nginx:$NGINX_VERSION AS runtime
 
 
 COPY  --from=build /workspace/dist/ /usr/share/nginx/html/
